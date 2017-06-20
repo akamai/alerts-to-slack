@@ -49,13 +49,15 @@ def handler(event, context):
 	alert_obj = json.loads(alert_result.text)
 	data = alert_obj["data"]
 	if len(data) < 1:
-		return env
+		return data
 
 	slack_message = {
 		'channel': SLACK_CHANNEL,
-		'text': "%s" % (alert_result.text)
+		'text': "Alert from Akamai: %s" % (data[0]["fieldMap"]["alertType"]),
+		'username':'Akamai Alert Bot',
+		'icon_emoji':'ghost'
 	}
 	slack_result = slackSession.post(HOOK_URL, data=json.dumps(slack_message))
 	logger.info("Message posted to %s: %s",
 		slack_message['channel'], slack_result.text)
-	return(env)
+	return(data)
